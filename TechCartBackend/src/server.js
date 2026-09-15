@@ -1,11 +1,13 @@
 import express from "express";
+import { clerkMiddleware } from "@clerk/express";
 import path from "path";
 import { ENV } from "./config/env.js";
+import { connectDB } from "./config/db.js";
 
 const app = express();
 const __dirname = path.resolve();
-
-app.get("api/health", (req, res) => {
+app.use(clerkMiddleware()); // adds auth objects under the request  (req.auth, req.session, req.user, etc.)
+app.get("/api/health", (req, res) => {
   res.status(200).json({ message: "Sucess" });
 });
 
@@ -21,4 +23,11 @@ if (ENV.NODE_ENV === "production") {
   });
 }
 
-app.listen(ENV.PORT, () => console.log("Server is up and running"));
+const startServer = async () => {
+  await connectDB();
+  app.listen(ENV.PORT, () => {
+    console.log(`Server is running on port ${ENV.PORT}`);
+  });
+};
+
+startServer();
