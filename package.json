@@ -1,0 +1,23 @@
+{
+  "name": "techcart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {"node": ">=20.0.0"},
+ "scripts": {
+  "build": "npm install --prefix TechCartBackend && npm install --prefix TechCartAdmin && npm run build --prefix TechCartAdmin",
+  "start": "npm run start --prefix TechCartBackend"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PythoSalaf/TechCart-Ecommerce.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/PythoSalaf/TechCart-Ecommerce/issues"
+  },
+  "homepage": "https://github.com/PythoSalaf/TechCart-Ecommerce#readme"
+}
