@@ -47,13 +47,25 @@ export async function createProduct(req, res) {
   }
 }
 
-export async function getAllProducts(_, res) {
+export async function getAllProductsForAdmin(req, res) {
   try {
-    // The -1 means in descending order, so the most recent products will be returned first
-    const products = await Product.find().sort({ createdAt: -1 });
-    res.status(200).json(products);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [products, totalProducts] = await Promise.all([
+      Product.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Product.countDocuments(),
+    ]);
+
+    res.status(200).json({
+      products,
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / limit),
+      totalProducts,
+    });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching products for admin:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -164,7 +176,7 @@ export async function getAllCustomers(_, res) {
 
 export async function getDashboardStats(_, res) {
   try {
-    const totalOrder = await Order.countDoucments();
+    const totalOrder = await Order.countDocuments();
     const revenueResult = await Order.aggregate([
       {
         $group: {
@@ -174,7 +186,7 @@ export async function getDashboardStats(_, res) {
       },
     ]);
     const totalRevenue = revenueResult[0]?.total || 0;
-    const totalCustomers = await User.countDoucments();
+    const totalCustomers = await User.countDocuments();
     const totalProducts = await Product.countDocuments();
     res.status(200).json({
       totalRevenue,

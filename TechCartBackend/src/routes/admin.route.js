@@ -3,7 +3,7 @@ import {
   createProduct,
   getAllCustomers,
   getAllOrders,
-  getAllProducts,
+  getAllProductsForAdmin,
   getDashboardStats,
   updateOrderStatus,
   updateProduct,
@@ -15,7 +15,7 @@ const router = Router();
 router.use(protectRoute, adminOnly);
 
 router.post("/products", upload.array("images", 5), createProduct);
-router.get("/products", getAllProducts);
+router.get("/products", getAllProductsForAdmin);
 router.put("/products/:id", upload.array("images", 5), updateProduct);
 
 router.get("/orders", getAllOrders);
