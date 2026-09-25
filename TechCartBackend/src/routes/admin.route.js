@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createProduct,
-  getAllCustormers,
+  getAllCustomers,
   getAllOrders,
   getAllProducts,
   getDashboardStats,
@@ -20,7 +20,7 @@ router.put("/products/:id", upload.array("images", 5), updateProduct);
 
 router.get("/orders", getAllOrders);
 router.patch("/order/:orderId/status", updateOrderStatus);
-router.get("/custormers", getAllCustormers);
+router.get("/customers", getAllCustomers);
 router.get("/stats", getDashboardStats);
 
 // DIFFERENT BETWEEN PUT AND PATCH

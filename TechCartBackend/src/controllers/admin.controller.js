@@ -71,7 +71,7 @@ export async function updateProduct(req, res) {
 
     if (name) product.name = name;
     if (description) product.description = description;
-    if (price) product.price = parseFloat(price);
+    if (price !== undefined) product.price = parseFloat(price);
     if (stock !== undefined) product.stock = parseInt(stock);
     if (category) product.category = category;
 
@@ -152,12 +152,12 @@ export async function updateOrderStatus(req, res) {
   }
 }
 
-export async function getAllCustormers(_, res) {
+export async function getAllCustomers(_, res) {
   try {
-    const custormers = await User.find().sort({ createdAt: -1 });
-    res.status(200).json({ custormers });
+    const customers = await User.find().sort({ createdAt: -1 });
+    res.status(200).json({ customers });
   } catch (error) {
-    console.log("Error fetching custormers:", error);
+    console.log("Error fetching customers:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
@@ -174,12 +174,12 @@ export async function getDashboardStats(_, res) {
       },
     ]);
     const totalRevenue = revenueResult[0]?.total || 0;
-    const totalCustormers = await User.countDoucments();
+    const totalCustomers = await User.countDoucments();
     const totalProducts = await Product.countDocuments();
     res.status(200).json({
       totalRevenue,
       totalOrder,
-      totalCustormers,
+      totalCustomers,
       totalProducts,
     });
   } catch (error) {

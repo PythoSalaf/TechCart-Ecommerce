@@ -3,6 +3,7 @@ import path from "path";
 
 const storage = multer.diskStorage({
   fileName: (req, file, cb) => {
+    const ext = path.extname;
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
