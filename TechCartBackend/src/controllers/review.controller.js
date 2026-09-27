@@ -11,8 +11,6 @@ export async function createReview(req, res) {
     }
 
     const user = req.user;
-    // Verify if the order exist and delivered
-
     const order = await Order.findById(orderId);
 
     if (!order) {
@@ -31,8 +29,6 @@ export async function createReview(req, res) {
         .json({ error: "You can only review delivered orders" });
     }
 
-    // Verify if product is in the order
-
     const productInOrder = order.orderItems.find(
       (item) => item.product.toString() === productId.toString(),
     );
@@ -41,7 +37,6 @@ export async function createReview(req, res) {
       return res.status(404).json({ error: "Product not found in order" });
     }
 
-    // Check if review already exist
     const existingReview = await Review.findOne({
       productId,
       userId: user._id,
@@ -61,15 +56,24 @@ export async function createReview(req, res) {
       comment,
     });
 
-    // Updating the product rating
-
-    const product = await Product.findById(productId);
+    // Recalculate product rating
     const reviews = await Review.find({ productId });
     const totalRating = reviews.reduce((sum, rev) => sum + rev.rating, 0);
-    product.averageRating = totalRating / reviews.length;
-    product.totalReview = reviews.length;
 
-    await product.save();
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        averageRating: totalRating / reviews.length,
+        totalReview: reviews.length,
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedProduct) {
+      await Review.findByIdAndDelete(review._id);
+      return res.status(404).json({ error: "Product not found" });
+    }
+
     res.status(201).json({ message: "Review submitted successfully", review });
   } catch (error) {
     console.log("Error from createReview controller", error);
@@ -100,7 +104,7 @@ export async function deleteReview(req, res) {
     const totalRating = reviews.reduce((sum, rev) => sum + rev.rating, 0);
     await Product.findByIdAndUpdate(productId, {
       averageRating: reviews.length > 0 ? totalRating / reviews.length : 0,
-      totalReview: reviews.length, // ← fixed: was totalReviews
+      totalReview: reviews.length,
     });
 
     res.status(200).json({ message: "Review deleted successfully" });
