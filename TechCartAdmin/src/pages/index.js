@@ -1,0 +1,10 @@
+export { default as Dashboard } from "./Dashboard";
+export { default as Analytics } from "./Analytics";
+export { default as Product } from "./Product";
+export { default as ProductDetails } from "./ProductDetails";
+export { default as Order } from "./Order";
+export { default as OrderDetails } from "./OrderDetails";
+export { default as Settings } from "./Settings";
+export { default as Customers } from "./Customers";
+export { default as Login } from "./Login";
+export { default as Layout } from "./Layout";
